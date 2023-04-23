@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Stopwatch</title>
+  <style>
+    body {
+      background-color: black;
+      color: white;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    .stopwatch {
+      font-size: 450px;
+      margin-top: 120px;
+    }
+
+    .btn {
+      margin-top: 20px;
+      font-size: 24px;
+      padding: 10px 20px;
+      background-color: #333;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      background-color: #555;
+    }
+
+    .btn:focus {
+      outline: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="stopwatch">0:00:00</div>
+  <button class="btn" onclick="startPauseStopwatch()">Start/Pause</button>
+  <button class="btn" onclick="resetStopwatch()">Reset</button>
+
+  <script>
+    var startTime;
+    var running = false;
+    var elapsedTime = 0;
+    var stopwatchInterval;
+
+    function startPauseStopwatch() {
+      if (!running) {
+        startTime = new Date().getTime();
+        stopwatchInterval = setInterval(updateStopwatch, 1000);
+        running = true;
+        document.querySelector('.btn').textContent = 'Pause';
+      } else {
+        clearInterval(stopwatchInterval);
+        running = false;
+        document.querySelector('.btn').textContent = 'Unpause';
+      }
+    }
+
+    function updateStopwatch() {
+      var currentTime = new Date().getTime();
+      elapsedTime = currentTime - startTime;
+      var formattedTime = formatTime(elapsedTime);
+      document.querySelector('.stopwatch').textContent = formattedTime;
+    }
+
+    function formatTime(time) {
+      var seconds = Math.floor(time / 1000);
+      var minutes = Math.floor(seconds / 60);
+      seconds %= 60;
+      var hours = Math.floor(minutes / 60);
+      minutes %= 60;
+      return hours + ':' + padZero(minutes) + ':' + padZero(seconds);
+    }
+
+    function padZero(num) {
+      return num < 10 ? '0' + num : num;
+    }
+
+    function resetStopwatch() {
+      clearInterval(stopwatchInterval);
+      elapsedTime = 0;
+      running = false;
+      document.querySelector('.stopwatch').textContent = '0:00:00';
+      document.querySelector('.btn').textContent = 'Start';
+    }
+
+    document.addEventListener('keydown', function(event) {
+      if (event.keyCode === 32) { // Space key
+        event.preventDefault();
+        startPauseStopwatch();
+      }
+    });
+  </script>
+</body>
+</html>
